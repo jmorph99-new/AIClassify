@@ -26,25 +26,29 @@ import java.util.concurrent.TimeUnit;
 
 class ClassifyMain
 {
-  private final static float MAXSCORE = 50f;
+
   private static ConcurrentHashMap<String, Object> cannotProcessList = new ConcurrentHashMap<>();
   public static void main(String[] args)
     throws Exception {
       String slash = "/";
       if (Constants.WINDOWS)
           slash = "\\";
-      if(args.length != 4)
-          System.out.println("USAGE: ");
-      String indexpath = "/tmp/index";
+      if(args.length != 5) {
+          System.out.println("USAGE: java -jar <PathToAIClassify.jar> <pathOfDirectoryToProcess> <pathToTempDirectoryForIndex> <randomSeed> <SimilarityScore> <numberOfThreadsUsed");
+          return;
+      }
+
+      final String directoryPath = args[0];
+      String indexpath = args[1];
       if (!indexpath.endsWith(slash))
           indexpath = indexpath + slash;
-      String filepath = "/home/murphy/Documents";
-
-      int processCount = 8;
-      StandardAnalyzer standardAnalyzer = new StandardAnalyzer();
+      final long seed = Long.valueOf(args[2]);
+      final float MAXSCORE = Float.valueOf(args[3]);
+      final int processCount = Integer.valueOf(args[3]);
+      final StandardAnalyzer standardAnalyzer = new StandardAnalyzer();
       File mxk = new File(indexpath);
       Directory dir = NIOFSDirectory.open(Paths.get(indexpath));
-if(true){
+
       LimitTokenCountAnalyzer limitTokenCountAnalyzer = new LimitTokenCountAnalyzer(standardAnalyzer, 5000);
       IndexWriterConfig indexWriterConfig = new IndexWriterConfig(limitTokenCountAnalyzer);
       indexWriterConfig.setRAMBufferSizeMB(512.0D);
@@ -58,14 +62,14 @@ if(true){
       ThreadPoolExecutor exService = new ThreadPoolExecutor(processCount, processCount, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue(5000));
       recursiveFileLocator ft = new recursiveFileLocator();
 
-      ft.filepath = filepath;
+      ft.filepath = directoryPath;
       ft.exService = exService;
       ft.startWalk();
 
 
       writer.commit();
       writer.close();
-  }
+
     IndexReader indexReader = DirectoryReader.open(dir);
     IndexSearcher indexSearcher = new IndexSearcher(indexReader);
     final HashMap<Integer, String> potentialCentroids = new HashMap<>();
@@ -77,7 +81,7 @@ if(true){
 
     }
     Random random = new Random();
-    random.setSeed(1);
+    random.setSeed(seed);
     MoreLikeThis moreLikeThis = new MoreLikeThis(indexReader);
     moreLikeThis.setFieldNames(new String[]{"text"});
     //Select random centroid and finds all within MAX Distance and removes them from the centroid pool

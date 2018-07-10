@@ -12,7 +12,7 @@ Instruction
 4) run "cd AIClassify"
 5) Compile and install.  run "mvn install"
 6) move libraries.  Run "mvn dependency:copy-dependencies"
-6) java -jar <pathTo>/AIClassify.jar <pathOfDirectoryToProcess> <pathToTempDirectoryForIndex> <randomSeed> <SimilarityScore> <numberOfThreadsUsed>
+6) java -jar <PathTo>/AIClassify.jar <pathOfDirectoryToProcess> <pathToTempDirectoryForIndex> <randomSeed> <SimilarityScore> <numberOfThreadsUsed>
 
 This will create a results.csv file that can be opened in Excel
 First Column is the groupids
@@ -21,8 +21,8 @@ Third Column is the file grouped with the centroid
 
 Special Cases
 
-groupid:-1 - Centroids with no members
-groupid:-2 - Files that could not be processed
+groupid:-1 - Centroids with no members.
+groupid:-2 - Files that could not be processed.
 
 In these cases the second and third columns are identical
 

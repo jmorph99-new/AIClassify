@@ -11,68 +11,38 @@
         <directory>${project.basedir}/target</directory>
         <outputDirectory>${project.build.directory}/classes</outputDirectory>
         <finalName>${project.artifactId}</finalName>
-      <pluginManagement>
+
       <!-- NOTE: These plugins will be removed from future versions of the super POM -->
       <!-- They are kept for the moment as they are very unlikely to conflict with lifecycle mappings (MNG-4453) -->
       <plugins>
 
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>2.6</version>
-            <configuration>
-                <archive>
-
-                    <manifest>
-                        <addClasspath>true</addClasspath>
-                        <classpathPrefix>dependency/</classpathPrefix>
-                        <mainClass>Classify.ClassifyMain</mainClass>
-                    </manifest>
-                </archive>
-            </configuration>
-
-
-        </plugin>
-        <plugin>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>2.5.1</version>
-        </plugin>
           <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-resources-plugin</artifactId>
-              <version>2.5</version>
+              <artifactId>maven-assembly-plugin</artifactId>
               <configuration>
-                  <encoding>UTF-8</encoding>
+                  <archive>
+                      <manifest>
+                          <mainClass>Classify.ClassifyMain</mainClass>
+                      </manifest>
+                  </archive>
+                  <descriptorRefs>
+                      <descriptorRef>jar-with-dependencies</descriptorRef>
+                  </descriptorRefs>
               </configuration>
-          </plugin>
-
-        <plugin>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>2.5.3</version>
-        </plugin>
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-dependency-plugin</artifactId>
               <executions>
                   <execution>
-                      <id>copy-dependencies</id>
-                      <phase>package</phase>
+                      <phase>package</phase> <!-- bind to the packaging phase -->
                       <goals>
-                          <goal>copy-dependencies</goal>
+                          <goal>single</goal>
                       </goals>
-                      <configuration>
-                          <outputDirectory>${project.basedir}/target/lib/</outputDirectory>
-                          <overWriteReleases>false</overWriteReleases>
-                          <overWriteSnapshots>false</overWriteSnapshots>
-                          <overWriteIfNewer>true</overWriteIfNewer>
-                      </configuration>
                   </execution>
               </executions>
           </plugin>
 
+
       </plugins>
-    </pluginManagement>
+
     </build>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.lucene</groupId>
